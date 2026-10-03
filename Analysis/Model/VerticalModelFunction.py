@@ -54,7 +54,7 @@ def model(Direct_Irradiance, Diffuse_Irradiance, Upwelling_Irradiance, effs, sha
     angle_panel = 360 - panel_angle_negative
     Change_Time_1 = angle_panel/360*1440
     Change_Time_2 = Change_Time_1 + 1440/2
-    Angular_Dependance_Front = np.array(np.cos(np.pi/(Change_Time_2 - Change_Time_1)*(time - (Change_Time_1 + Change_Time_2)/2))*np.cos((90-zenith)*np.pi/180))
+    Angular_Dependance_Front = np.array(np.cos(np.pi/(Change_Time_2 - Change_Time_1)*(time - (Change_Time_1 + Change_Time_2)/2))*np.cos((90 - zenith)*np.pi/180))
     Angular_Dependance_Back = np.array(-Angular_Dependance_Front)
     
     # create front of panel simulation (I did tricky math to get these)
