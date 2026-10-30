@@ -282,12 +282,12 @@ sns.set_style('darkgrid')
 # plt.scatter(x_data, counts_power_103, s = 1)
 power_101_total = np.asarray(power_101_total, dtype=float)
 power_103_total = np.asarray(power_103_total, dtype=float)
-mean_101, bin_edges_101, bin_number_101 = binstat(np.arange(0,len(power_101_total), 1), power_101_total, statistic = 'mean', bins = bins)
-mean_103, bin_edges_103, bin_number_103 = binstat(np.arange(0,len(power_103_total)), power_103_total, statistic = 'mean', bins = bins)
+mean_101, bin_edges_101, bin_number_101 = binstat(np.arange(0,len(power_101_total), 1), power_101_total, statistic = np.nanmean, bins = bins)
+mean_103, bin_edges_103, bin_number_103 = binstat(np.arange(0,len(power_103_total)), power_103_total, statistic = np.nanmean, bins = bins)
 # bin_size_101 = bin_edges_101[1] - bin_edges_101[0]
 # bin_size_103 = bin_edges_103[1] - bin_edges_103[0]
 # plt.figure(figsize=(20,4.8))
-fig, (ax1, ax2) = plt.subplots(nrows = 2, ncols = 1, figsize=(20,5))
+fig, (ax1, ax2, ax3) = plt.subplots(nrows = 3, ncols = 1, figsize=(20,10), sharex = True)
 # ax1.plot(x_data, mean_101, label = 'panel 101', color = '#5e03fc')
 # ax2.plot(x_data, mean_103, label = 'panel 103', color = '#5e03fc')
 
@@ -298,18 +298,48 @@ ax2.scatter(x_data, mean_103, label = 'panel 103', color = '#5e03fc')
 # time_x_binned = np.where(time_x_binned == '', np.nan, time_x_binned)
 number_shown = 10
 entry_shown = int(len(x_data)/number_shown)
+
+
+
+# get sky coverage 
+november_2025_sky_coverage = [3]
+december_2025_sky_coverage = [2,7,6,7,3,3,2,2,1,0,3,7,1,2,5,4,6,4,2,5,3,5,6,2,3,7,7,4,0,2,7]
+january_2026_sky_coverage = [5,7,8,8,4,4,1,2,1,1,3,8,5,2,1,2,6,8,7,3,4,2,5,5,4,6,7,6,6,3,0]
+# correct for day range
+combined_cloud = np.concatenate((november_2025_sky_coverage, december_2025_sky_coverage, january_2026_sky_coverage[:25]))
+print(len(combined_cloud))
+print(len(x_data))
+ax3.scatter(x_data, combined_cloud)
+ax3.set_ylabel('Cloud level /8', fontsize = 15)
+# fig.tight_layout(pad=2.0) 
+
 # ax1.set_xticks(x_data[::entry_shown], time_x[::entry_shown], rotation = 0, fontsize = 7)
-ax1.set_xticks([])
-ax2.set_xticks(x_data[::entry_shown], time_x[::entry_shown], rotation = 20, fontsize = 7)
-fig.suptitle('Solar Panel Power Mean Per Day')
+ax1.set_xticklabels(['']*len(x_data[::entry_shown]))
+ax2.set_xticklabels(['']*len(x_data[::entry_shown]))
+ax3.set_xticks(x_data[::entry_shown], time_x[::entry_shown], rotation = 20, fontsize = 7)
+fig.suptitle('Solar Panel Power Mean Per Day', fontsize = 20)
 ax1.legend()
 ax2.legend()
-ax2.set_xlabel('time')
+ax3.set_xlabel('time', fontsize = 15)
 # ax1.set_xlabel('time')
-ax1.set_ylabel('power [w]')
-ax2.set_ylabel('power [w]')
+ax1.set_ylabel('Power [w]', fontsize = 15)
+ax2.set_ylabel('Power [w]', fontsize = 15)
+ax1.set_ylim(0,300)
+ax2.set_ylim(0,300)
 # plt.tick_params(axis = 'x', rotation = 0, labelsize = 5)
 # plt.xlim(0,len(time_x)-1)
+# ax1.grid(True)
+# ax2.grid(True)
+# ax3.grid(True)
+ax1.grid(visible=True, which='both', axis='both', linestyle='-', linewidth=1, color='white', alpha=0.5)
+ax1.set_axisbelow(True)
+
+ax2.grid(visible=True, which='both', axis='both', linestyle='-', linewidth=1, color='white', alpha=0.5)
+ax2.set_axisbelow(True)
+
+ax3.grid(visible=True, which='both', axis='both', linestyle='-', linewidth=1, color='white', alpha=0.5)
+ax3.set_axisbelow(True)
+
 plt.savefig('full_test_power_per_day.png')
 plt.show()
 
